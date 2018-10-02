@@ -28,7 +28,7 @@ function buildmode {
     fi
     pushd $LAZDIR >& /dev/null
     rm -f kernel*.img kernel.bin
-    ./lazbuild --build-mode=BUILD_MODE_$MODE $WD/$LPIFILE > errors.txt 2>&1
+    ./lazbuild --build-mode=BUILD_MODE_$MODE $WD/$LPIFILE # > errors.txt 2>&1
     popd >& /dev/null
     mv kernel* $(basename $LPIFILE)-kernel-${MODE,,}.img
 }
@@ -41,8 +41,9 @@ DISPLAY="-display none"
 NET="-net nic -net user,hostfwd=tcp::5823-:23"
 CMDLINE="NETWORK0_IP_CONFIG=STATIC NETWORK0_IP_ADDRESS=10.0.2.15 NETWORK0_IP_NETMASK=255.255.255.0 NETWORK0_IP_GATEWAY=10.0.2.2"
 echo
-echo starting qemu and telnet ... wait for ultibo prompt ... then escape with ! and enter \"mode line\"
+echo starting qemu and telnet ... wait for ultibo prompt \(can take 5 or more seconds\) ... then escape with ! and enter \"mode line\"
 qemu-system-arm -machine versatilepb -cpu cortex-a8 -m 256M $DRIVE $KERNEL $NET $DISPLAY -append "$CMDLINE" |& egrep -v '^(ALSA |alsa:|audio:|pulseaudio:)' &
+
 echo
 sleep 1
 telnet -e ! localhost 5823

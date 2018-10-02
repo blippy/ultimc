@@ -119,40 +119,42 @@ end;
 
 function TShellForth.DoHelp(AShell:TShell;ASession:TShellSession):Boolean; 
 begin
- {}
  Result:=False;
- 
- {Check Shell}
  if AShell = nil then Exit;
- 
- {Do Help}
  AShell.DoOutput(ASession,'Submit sentence to forth interpreter');
  AShell.DoOutput(ASession,'');
- 
- {Return Result}
  Result:=True;
 end;
  
 function TShellForth.DoInfo(AShell:TShell;ASession:TShellSession):Boolean; 
 begin
- {}
  Result:=False;
- 
- {Check Shell}
  if AShell = nil then Exit;
- 
- {Do Info}
- Result:=AShell.DoOutput(ASession,'Submit sentence to forth interpreter');
+ AShell.DoOutput(ASession,'Submit sentence to forth interpreter');
+ Result:=True;
 end;
-
 
 procedure ShellForthWritePtr(text:string);
 begin
  TheShell.DoOutput(TheSession, text);
 end;
+
+var
+ StartUpLineCounter:Integer;
+
 procedure ShellForthReadLnPtr(var text:string);
 begin
- TheShell.DoInput(TheSession, text);
+ case StartUpLineCounter of
+ 1:
+  text:=': print type cr ;';
+ 2:
+  text:='s" Ultibo!"';
+ 3:
+  text:='print'
+ else
+  TheShell.DoInput(TheSession, text);
+ end;
+ Inc(StartUpLineCounter);
 end;
 
 function TShellForth.DoCommand(AShell:TShell;ASession:TShellSession;AParameters:TStrings):Boolean; 
@@ -160,11 +162,9 @@ var
  Sentence:String;
  i:Integer;
 begin
- {}
  Result:=False;
- 
- {Check Shell}
  if AShell = nil then Exit;
+ if AParameters = nil then Exit;
 
  {stuff inserted by MC (Mark Carter)}
  AShell.DoOutput(ASession, Format('forth interpreter initialized',[]));
@@ -174,15 +174,12 @@ begin
  WritePtr := @ShellForthWritePtr;
  ReadLinePtr := @ShellForthReadLnPtr;
  ForthWriteLn('From inside WritePtr, Now say something');
- ReadLinePtr(Sentence); // TODO this doesn't actually work
- ForthWriteLn(concat('You said:', Sentence));
- exit(); // exit just for now
+// ReadLinePtr(Sentence); // TODO this doesn't actually work
+// ForthWriteLn(concat('You said:', Sentence));
+// exit(); // exit just for now
+ StartUpLineCounter := 1;
  RunForthRepl();
  Exit;
-
-
- {Check Parameters}
- if AParameters = nil then Exit;
 
  if ForthInterpreter = 0 then
   begin
@@ -210,7 +207,7 @@ begin
  {Check Initialized}
  if ShellForthInitialized then Exit;
  
- {Register FileSystem Commands}
+ {Register Forth Commands}
  ShellRegisterCommand(TShellForth.Create);
 
  ShellForthInitialized:=True;
