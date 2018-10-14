@@ -7,9 +7,9 @@ program fipq;
 
 uses
   {$ifdef BUILD_MODE_QEMUVPB} QEMUVersatilePB,  {$endif}
-  {$ifdef BUILD_MODE_RPI    } BCM2835, BCM2708, {$endif}
-  {$ifdef BUILD_MODE_RPI2   } BCM2836, BCM2709, {$endif}
-  {$ifdef BUILD_MODE_RPI3   } BCM2837, BCM2710, {$endif}
+  {$ifdef BUILD_MODE_RPI    } RaspberryPi,      {$endif}
+  {$ifdef BUILD_MODE_RPI2   } RaspberryPi2,     {$endif}
+  {$ifdef BUILD_MODE_RPI3   } RaspberryPi3,     {$endif}
   //QEMUVersatilePB
   armall
 

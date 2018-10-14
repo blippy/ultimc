@@ -19,7 +19,7 @@ uses
   , SysUtils
   , Classes
   , Ultibo
-  , DWCOTG, Keyboard
+  , Keyboard
   , FileSystem, MMC, FATFS
   , RemoteShell, ShellForth
 
